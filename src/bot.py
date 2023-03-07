@@ -5,6 +5,7 @@ from telegram import Update, InlineQueryResultArticle, InputTextMessageContent
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, MessageHandler, filters, InlineQueryHandler
 
 from chatgpt import ChatGPT
+from currency_converter import CurrencyConverter
 
 class TelegramBot:
 
@@ -136,6 +137,47 @@ class TelegramBot:
             logging.info(f'Group chat messages from user {update.message.from_user.name} are not allowed')
 
         return False
+
+    def currency_converter(update, context):
+        message_text = update.message.text.lower()
+
+        # Список поддерживаемых валют
+        supported_currencies = {
+            "usd": "$|баксы|долларов|доллар|$",
+            "eur": "евро",
+            "gbp": "фунты|фунтов",
+            "jpy": "йен",
+            "cny": "юаней|юань|يوان|元",
+            "aud": "ауд|австралийских долларов",
+            "cad": "канадских долларов|канадский доллар",
+            "chf": "швейцарских франков|швейцарский франк|fr.",
+            "sek": "шведских крон|шведская крона",
+            "nok": "норвежских крон|норвежская крона",
+            "dkk": "датских крон|датская крона",
+            "thb": "бат",
+            "rub": "рублей|руб|₽",
+            "idr": "рупий|идр"
+        }
+
+        # Создаем экземпляр класса CurrencyConverter
+        converter = CurrencyConverter()
+
+
+        # Проверяем, есть ли в сообщении упоминание валюты
+        for currency, regex in supported_currencies.items():
+            if currency == "rub":
+                if regex in message_text:
+                    amount = float(message_text.split(regex)[0].replace(',', '').replace('.', '').replace(' ', ''))
+                    converted_amount = amount
+                    context.bot.send_message(
+                        chat_id=update.effective_chat.id, text=f"{amount} {currency.upper()} = {converted_amount} RUB"
+                    )
+            else:
+                if any(regex.search(regex, message_text) for regex in regex.split('|')):
+                    amount = float(message_text.split()[0].replace(',', '').replace('.', '').replace(' ', ''))
+                    converted_amount = converter.convert_currency(currency, amount)
+                    message = f"{amount} {currency.upper()} = {converted_amount} RUB"
+                    context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
     def run(self):
         """
