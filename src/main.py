@@ -24,7 +24,7 @@ def main():
         'max_conversation_age_minutes': int(os.environ.get('MAX_CONVERSATION_AGE_MINUTES', 180)),
 
         # 'gpt-3.5-turbo' or 'gpt-3.5-turbo-0301'
-        'model': 'EleutherAI/gpt-neo-2.7B',
+        'model': 'gpt-3.5-turbo',
 
         # A system message that sets the tone and controls the behavior of the assistant.
         'assistant_prompt': 'You are a helpful assistant.',
@@ -37,7 +37,7 @@ def main():
         'n_choices': 1,
 
         # The maximum number of tokens allowed for the generated answer
-        'max_tokens': 4096,
+        'max_tokens': 10000,
 
         # Number between -2.0 and 2.0. Positive values penalize new tokens based on whether
         # they appear in the text so far, increasing the model's likelihood to talk about new topics.
