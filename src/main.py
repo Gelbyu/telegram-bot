@@ -37,7 +37,7 @@ def main():
         'n_choices': 1,
 
         # The maximum number of tokens allowed for the generated answer
-        'max_tokens': 1200,
+        'max_tokens': 10000,
 
         # Number between -2.0 and 2.0. Positive values penalize new tokens based on whether
         # they appear in the text so far, increasing the model's likelihood to talk about new topics.
